@@ -1,86 +1,75 @@
-#include <unistd.h>
-#include <stdarg.h>
+#include "main.h"
 
-/**
- * print_char - Print a single character to stdout
- * @c: The character to print
- * Return: Number of characters printed
- */
-int print_char(char c)
-{
-	write(1, &c, 1);
-	return (1);
-}
-
-/**
- * print_string - Print a string to stdout
- * @str: The string to print
- * Return: Number of characters printed
- */
-int print_string(char *str)
-{
-	if (str != NULL)
-	{
-		int len = 0;
-
-		while (str[len])
-			len++;
-		write(1, str, len);
-		return (len);
-	}
-	else
-	{
-		write(1, "(null)", 6);
-		return (6);
-	}
-}
+/* Function prototypes */
+void print_buffer(char buffer[], int *buff_ind);
+int handle_char(const char *format, int *index, va_list args, char buffer[], int flags, int width, int precision, int size);
+int handle_string(const char *format, int *index, va_list args, char buffer[], int flags, int width, int precision, int size);
+int handle_percent(const char *format, int *index, va_list args, char buffer[], int flags, int width, int precision, int size);
 
 /**
  * _printf - Printf function
  * @format: format.
- * Return: Number of characters printed
+ * Return: Printed chars.
  */
 int _printf(const char *format, ...)
 {
-	int p = 0;
-	va_list args;
+    int i, printed_chars = 0, buff_ind = 0;
+    va_list list;
+    char buffer[BUFF_SIZE];
 
-	if (format == NULL)
-		return (-1);
+    if (format == NULL)
+        return (-1);
 
-	va_start(args, format);
+    va_start(list, format);
 
-	while (*format)
-	{
-		if (*format == '%')
-		{
-			format++;
+    for (i = 0; format[i] != '\0'; i++)
+    {
+        if (format[i] != '%')
+        {
+            buffer[buff_ind++] = format[i];
+            if (buff_ind == BUFF_SIZE)
+                print_buffer(buffer, &buff_ind);
+            printed_chars++;
+        }
+        else
+        {
+            print_buffer(buffer, &buff_ind);
+            ++i;
 
-			switch (*format)
-			{
-				case 'c':
-					p += print_char((char)va_arg(args, int));
-					break;
-				case 's':
-					p += print_string(va_arg(args, char *));
-					break;
-				case '%':
-					p += print_char('%');
-					break;
-				default:
-					p += print_char('%');
-					p += print_char(*format);
-					break;
-			}
-		}
-		else
-		{
-			p += print_char(*format);
-		}
+            int (*handler)(const char*, int*, va_list, char[], int, int, int, int) = NULL;
+            switch (format[i])
+            {
+                case 'c':
+                    handler = handle_char;
+                    break;
+                case 's':
+                    handler = handle_string;
+                    break;
+                case '%':
+                    handler = handle_percent;
+                    break;
+                
+                default:
+                   
+                    break;
+            }
 
-		format++;
-	}
-	va_end(args);
-	return (p);
+            if (handler != NULL)
+            {
+                int printed = handler(format, &i, list, buffer, 0, 0, 0, 0);
+                if (printed == -1)
+                {
+                    va_end(list);
+                    return (-1);
+                }
+                printed_chars += printed;
+            }
+        }
+    }
+
+    print_buffer(buffer, &buff_ind);
+
+    va_end(list);
+
+    return (printed_chars);
 }
-
