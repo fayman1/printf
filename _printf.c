@@ -12,35 +12,6 @@ int _putchar(char c)
 }
 
 /**
- * _puts - prints a string to stdout
- * @str: The string to print
- * Return: The number of characters printed (excluding the null terminator)
- */
-int _puts(char *str)
-{
-    int i = 0;
-
-    if (str == NULL)
-    {
-        _putchar('(');
-        _putchar('n');
-        _putchar('u');
-        _putchar('l');
-        _putchar('l');
-        _putchar(')');
-        return (6);
-    }
-
-    while (str[i])
-    {
-        _putchar(str[i]);
-        i++;
-    }
-
-    return (i);
-}
-
-/**
  * _printf - Printf function
  * @format: format.
  * Return: Number of characters printed
@@ -66,9 +37,24 @@ int _printf(const char *format, ...)
                 case 'c':
                     p += _putchar((char)va_arg(args, int));
                     break;
-                case 's':
-                    p += _puts(va_arg(args, char *));
+                case 's': {
+                    char *str = va_arg(args, char *);
+                    if (str == NULL) {
+                        p += _putchar('(');
+                        p += _putchar('n');
+                        p += _putchar('u');
+                        p += _putchar('l');
+                        p += _putchar('l');
+                        p += _putchar(')');
+                    } else {
+                        int i = 0;
+                        while (str[i]) {
+                            p += _putchar(str[i]);
+                            i++;
+                        }
+                    }
                     break;
+                }
                 case '%':
                     p += _putchar('%');
                     break;
