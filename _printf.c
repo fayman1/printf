@@ -2,36 +2,42 @@
 #include <stdarg.h>
 
 /**
- * print_char - Print a single character to stdout
+ * _putchar - writes a character to stdout
  * @c: The character to print
- * Return: Number of characters printed
+ * Return: 1 on success, -1 on error.
  */
-int print_char(char c)
+int _putchar(char c)
 {
-    write(1, &c, 1);
-    return (1);
+    return (write(1, &c, 1));
 }
 
 /**
- * print_string - Print a string to stdout
+ * _puts - prints a string to stdout
  * @str: The string to print
- * Return: Number of characters printed
+ * Return: The number of characters printed (excluding the null terminator)
  */
-int print_string(char *str)
+int _puts(char *str)
 {
-    if (str != NULL)
+    int i = 0;
+
+    if (str == NULL)
     {
-        int len = 0;
-        while (str[len])
-            len++;
-        write(1, str, len);
-        return (len);
-    }
-    else
-    {
-        write(1, "(null)", 6);
+        _putchar('(');
+        _putchar('n');
+        _putchar('u');
+        _putchar('l');
+        _putchar('l');
+        _putchar(')');
         return (6);
     }
+
+    while (str[i])
+    {
+        _putchar(str[i]);
+        i++;
+    }
+
+    return (i);
 }
 
 /**
@@ -43,7 +49,6 @@ int _printf(const char *format, ...)
 {
     int p = 0;
     va_list args;
-    int in_specifier = 0;
 
     if (format == NULL)
         return (-1);
@@ -52,38 +57,30 @@ int _printf(const char *format, ...)
 
     while (*format)
     {
-        if (*format == '%' && !in_specifier)
+        if (*format == '%')
         {
-            in_specifier = 1;
             format++;
-            continue;
-        }
-
-        if (in_specifier)
-        {
-            in_specifier = 0;
 
             switch (*format)
             {
                 case 'c':
-                    p += print_char((char)va_arg(args, int));
+                    p += _putchar((char)va_arg(args, int));
                     break;
                 case 's':
-                    p += print_string(va_arg(args, char *));
+                    p += _puts(va_arg(args, char *));
                     break;
                 case '%':
-                    p += print_char('%');
+                    p += _putchar('%');
                     break;
                 default:
-             
-                    p += print_char('%');
-                    p += print_char(*format);
+                    p += _putchar('%');
+                    p += _putchar(*format);
                     break;
             }
         }
         else
         {
-            p += print_char(*format);
+            p += _putchar(*format);
         }
 
         format++;
