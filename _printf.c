@@ -67,6 +67,7 @@ int _printf(const char *format, ...)
                     p += print_char('%');
                     break;
                 default:
+                    
                     p += print_char('%');
                     p += print_char(*format);
                     break;
