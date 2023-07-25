@@ -61,8 +61,6 @@ int _printf(const char *format, ...)
 					break;
 				case 's':
 					str = va_arg(args, char *);
-					if (str == NULL)
-						str = "(null)";
 					count += _puts(str);
 					break;
 				case '%':
