@@ -1,6 +1,5 @@
 #include "main.h"
 #include <unistd.h>
-#include <stdlib.h>
 
 /**
  * _putchar - writes a character to stdout
@@ -10,23 +9,6 @@
 int _putchar(char c)
 {
 	return write(1, &c, 1);
-}
-
-/**
- * _puts - prints a string to stdout
- * @str: The string to print
- * Return: The number of characters printed
- */
-int _puts(char *str)
-{
-	int i = 0;
-
-	while (str[i])
-	{
-		_putchar(str[i]);
-		i++;
-	}
-	return (i);
 }
 
 /**
@@ -58,7 +40,14 @@ int _printf(const char *format, ...)
 					break;
 				case 's':
 					str = va_arg(args, char *);
-					count += _puts(str);
+					if (str == NULL)
+						str = "(null)";
+					while (*str)
+					{
+						_putchar(*str);
+						str++;
+						count++;
+					}
 					break;
 				case '%':
 					_putchar('%');
