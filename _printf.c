@@ -60,21 +60,22 @@ int _printf(const char *format, ...)
             if (*format == '\0')
                 return (-1); // Handle case when '%' is at the end of the format string
 
-            switch (*format)
+            if (*format == 'c')
             {
-                case 'c':
-                    p += print_char((char)va_arg(args, int));
-                    break;
-                case 's':
-                    p += print_string(va_arg(args, char *));
-                    break;
-                case '%':
-                    p += print_char('%');
-                    break;
-                default:
-                    p += print_char('%');
-                    p += print_char(*format);
-                    break;
+                p += print_char((char)va_arg(args, int));
+            }
+            else if (*format == 's')
+            {
+                p += print_string(va_arg(args, char *));
+            }
+            else if (*format == '%')
+            {
+                p += print_char('%');
+            }
+            else
+            {
+                p += print_char('%');
+                p += print_char(*format);
             }
         }
         else
