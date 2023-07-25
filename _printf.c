@@ -1,4 +1,6 @@
 #include "main.h"
+#include <unistd.h>
+#include <stdarg.h>
 
 /**
  * print_char - Print a single character to stdout
@@ -7,8 +9,8 @@
  */
 int print_char(char c)
 {
-	write(1, &c, 1);
-	return (1);
+    write(1, &c, 1);
+    return (1);
 }
 
 /**
@@ -18,20 +20,20 @@ int print_char(char c)
  */
 int print_string(char *str)
 {
-	if (str != NULL)
-	{
-		int len = 0;
+    if (str != NULL)
+    {
+        int len = 0;
 
-		while (str[len])
-			len++;
-		write(1, str, len);
-		return (len);
-	}
-	else
-	{
-		write(1, "(null)", 6);
-		return (6);
-	}
+        while (str[len])
+            len++;
+        write(1, str, len);
+        return (len);
+    }
+    else
+    {
+        write(1, "(null)", 6);
+        return (6);
+    }
 }
 
 /**
@@ -41,49 +43,49 @@ int print_string(char *str)
  */
 int _printf(const char *format, ...)
 {
-	int p = 0;
-	va_list args;
+    int p = 0;
+    va_list args;
 
-	if (format == NULL)
-		return (-1);
+    if (format == NULL)
+        return (-1);
 
-	va_start(args, format);
+    va_start(args, format);
 
-	while (*format)
-	{
-		if (*format == '%')
-		{
-			format++;
+    while (*format)
+    {
+        if (*format == '%')
+        {
+            format++;
 
-			if (*format == '\0')
-				return (-1); // Handle case when '%' is at the end of the format string
+            if (*format == '\0')
+                return (-1); // Handle case when '%' is at the end of the format string
 
-			switch (*format)
-			{
-				case 'c':
-					p += print_char((char)va_arg(args, int));
-					break;
-				case 's':
-					p += print_string(va_arg(args, char *));
-					break;
-				case '%':
-					p += print_char('%');
-					break;
-				default:
-					p += print_char('%');
-					p += print_char(*format);
-					break;
-			}
-		}
-		else
-		{
-			p += print_char(*format);
-		}
+            switch (*format)
+            {
+                case 'c':
+                    p += print_char((char)va_arg(args, int));
+                    break;
+                case 's':
+                    p += print_string(va_arg(args, char *));
+                    break;
+                case '%':
+                    p += print_char('%');
+                    break;
+                default:
+                    p += print_char('%');
+                    p += print_char(*format);
+                    break;
+            }
+        }
+        else
+        {
+            p += print_char(*format);
+        }
 
-		format++;
-	}
+        format++;
+    }
 
-	va_end(args);
-	return (p);
+    va_end(args);
+    return (p);
 }
 
