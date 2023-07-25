@@ -8,7 +8,36 @@
  */
 int _putchar(char c)
 {
-	return write(1, &c, 1);
+	return (write(1, &c, 1));
+}
+
+/**
+ * _puts - prints a string to stdout
+ * @str: The string to print
+ * Return: The number of characters printed (excluding the null terminator)
+ */
+int _puts(char *str)
+{
+	int i = 0;
+
+	if (str == NULL)
+	{
+		str = "(null)";
+		while (str[i])
+		{
+			_putchar(str[i]);
+			i++;
+		}
+		return (i);
+	}
+
+	while (str[i])
+	{
+		_putchar(str[i]);
+		i++;
+	}
+
+	return (i);
 }
 
 /**
@@ -38,17 +67,7 @@ int _printf(const char *format, ...)
 					p += _putchar((char)va_arg(args, int));
 					break;
 				case 's':
-					{
-						char *str = va_arg(args, char *);
-						if (str == NULL)
-							str = "(null)";
-						while (*str)
-						{
-							_putchar(*str);
-							str++;
-							p++;
-						}
-					}
+					p += _puts(va_arg(args, char *));
 					break;
 				case '%':
 					p += _putchar('%');
