@@ -1,11 +1,5 @@
 #include "main.h"
 
-/* Function prototypes */
-void print_buffer(char buffer[], int *buff_ind);
-int handle_char(const char *format, int *index, va_list args, char buffer[], int flags, int width, int precision, int size);
-int handle_string(const char *format, int *index, va_list args, char buffer[], int flags, int width, int precision, int size);
-int handle_percent(const char *format, int *index, va_list args, char buffer[], int flags, int width, int precision, int size);
-
 /**
  * _printf - Printf function
  * @format: format.
