@@ -1,5 +1,5 @@
-#include "main.h"
 #include <unistd.h>
+#include <stdarg.h>
 
 /**
  * _putchar - writes a character to stdout
@@ -12,73 +12,61 @@ int _putchar(char c)
 }
 
 /**
- * _puts - prints a string to stdout
- * @str: The string to print
- * Return: The number of characters printed (excluding the null byte)
- */
-int _puts(char *str)
-{
-	int i = 0;
-
-	if (str == NULL)
-		str = "(null)";
-
-	while (str[i])
-	{
-		_putchar(str[i]);
-		i++;
-	}
-
-	return (i);
-}
-
-/**
- * _printf - produces output according to a format
+ * _printf - Printf function
+ * @format: format.
+ * Return: Number of characters printed
  */
 int _printf(const char *format, ...)
 {
+	int p = 0;
 	va_list args;
-	int i = 0, count = 0;
-	char *str;
+
+	if (format == NULL)
+		return (-1);
 
 	va_start(args, format);
 
-	while (format && format[i])
+	while (*format)
 	{
-		if (format[i] != '%')
+		if (*format == '%')
 		{
-			_putchar(format[i]);
-			count++;
-		}
-		else
-		{
-			i++;
-			switch (format[i])
+			format++;
+
+			switch (*format)
 			{
 				case 'c':
-					_putchar(va_arg(args, int));
-					count++;
+					p += _putchar((char)va_arg(args, int));
 					break;
 				case 's':
-					str = va_arg(args, char *);
-					count += _puts(str);
+					{
+						char *str = va_arg(args, char *);
+						if (str == NULL)
+							str = "(null)";
+						while (*str)
+						{
+							_putchar(*str);
+							str++;
+							p++;
+						}
+					}
 					break;
 				case '%':
-					_putchar('%');
-					count++;
+					p += _putchar('%');
 					break;
 				default:
-					_putchar('%');
-					_putchar(format[i]);
-					count += 2;
+					p += _putchar('%');
+					p += _putchar(*format);
 					break;
 			}
 		}
-		i++;
+		else
+		{
+			p += _putchar(*format);
+		}
+
+		format++;
 	}
-
 	va_end(args);
-
-	return (count);
+	return (p);
 }
 
