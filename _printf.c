@@ -1,7 +1,7 @@
 #include "main.h"
 
 /**
- * _printf - mimics library function printf
+ * _printf - mimicks library function printf
  * @format: input string storing all desired characters
  * Return: no of characters printed
  */
@@ -21,18 +21,8 @@ int _printf(const char *format, ...)
 		return (-1);
 
 	va_start(arg_list, format);
-	const char *ptr = format;
-	do {
-		if (*ptr != '%' || *(ptr + 1) == '\0') {
-			putchar(*ptr);
-			output++;
-		} else {
-			ptr++;
-		}
-		ptr++;
-	} while (*ptr != '\0');
 
+	output = resolve(format, f_list, arg_list);
 	va_end(arg_list);
 	return (output);
 }
-
