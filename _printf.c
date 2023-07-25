@@ -1,92 +1,69 @@
 #include "main.h"
-#include <unistd.h>
-#include <stdarg.h>
 
 /**
- * print_char - Print a single character to stdout
- * @c: The character to print
- * Return: Number of characters printed
- */
-int print_char(char c)
-{
-    write(1, &c, 1);
-    return (1);
-}
-
-/**
- * print_string - Print a string to stdout
- * @str: The string to print
- * Return: Number of characters printed
- */
-int print_string(char *str)
-{
-    if (str != NULL)
-    {
-        int len = 0;
-
-        while (str[len])
-            len++;
-        write(1, str, len);
-        return (len);
-    }
-    else
-    {
-        write(1, "(null)", 6);
-        return (6);
-    }
-}
-
-/**
- * _printf - Printf function
- * @format: format.
- * Return: Number of characters printed
+ * _printf - Receives the main string and all the necessary parameters to
+ * print a formatted string
+ * @format: A string containing all the desired characters
+ * Return: A total count of the characters printed
  */
 int _printf(const char *format, ...)
 {
-    int p = 0;
-    va_list args;
+	int printed_chars = 0;
+	conver_t f_list[] = {
+		{"c", print_char},
+		{"s", print_string},
+		{"%", print_percent},
+		{"d", print_integer},
+		{"i", print_integer},
+		{"b", print_binary},
+		{"r", print_reversed},
+		{"R", rot13},
+		{"u", unsigned_integer},
+		{"o", print_octal},
+		{"x", print_hex},
+		{"X", print_heX},
+		{NULL, NULL}
+	};
+	va_list arg_list;
+	
+	if (format == NULL)
+		return (-1);
 
-    if (format == NULL)
-        return (-1);
+	va_start(arg_list, format);
 
-    va_start(args, format);
+	while (*format)
+	{
+		if (*format == '%')
+		{
+			format++;
+			int i = 0;
 
-    while (*format)
-    {
-        if (*format == '%')
-        {
-            format++;
+			while (f_list[i].specifier)
+			{
+				if (*format == *(f_list[i].specifier))
+				{
+					printed_chars += f_list[i].f(arg_list);
+					break;
+				}
+				i++;
+			}
 
-            if (*format == '\0')
-                return (-1); // Handle case when '%' is at the end of the format string
+			if (!f_list[i].specifier)
+			{
+				printed_chars += _putchar('%');
+				if (*format)
+					printed_chars += _putchar(*format);
+			}
+		}
+		else
+		{
+			printed_chars += _putchar(*format);
+		}
 
-            if (*format == 'c')
-            {
-                p += print_char((char)va_arg(args, int));
-            }
-            else if (*format == 's')
-            {
-                p += print_string(va_arg(args, char *));
-            }
-            else if (*format == '%')
-            {
-                p += print_char('%');
-            }
-            else
-            {
-                p += print_char('%');
-                p += print_char(*format);
-            }
-        }
-        else
-        {
-            p += print_char(*format);
-        }
+		format++;
+	}
 
-        format++;
-    }
-
-    va_end(args);
-    return (p);
+	va_end(arg_list);
+	return (printed_chars);
 }
 
