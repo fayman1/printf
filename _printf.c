@@ -43,6 +43,7 @@ int _printf(const char *format, ...)
 {
     int p = 0;
     va_list args;
+    int in_specifier = 0;
 
     if (format == NULL)
         return (-1);
@@ -51,9 +52,16 @@ int _printf(const char *format, ...)
 
     while (*format)
     {
-        if (*format == '%')
+        if (*format == '%' && !in_specifier)
         {
+            in_specifier = 1;
             format++;
+            continue;
+        }
+
+        if (in_specifier)
+        {
+            in_specifier = 0;
 
             switch (*format)
             {
@@ -67,7 +75,7 @@ int _printf(const char *format, ...)
                     p += print_char('%');
                     break;
                 default:
-                    
+             
                     p += print_char('%');
                     p += print_char(*format);
                     break;
