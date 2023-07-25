@@ -1,28 +1,83 @@
-#include "main.h"
+#include <unistd.h>
+#include <stdarg.h>
+
+/*;*
+ * print_char - Print a single character to stdout
+ * @c: The character to print
+ * Return: Number of characters printed (always 1)
+ */
+int print_char(char c)
+{
+    write(1, &c, 1);
+    return (1);
+}
 
 /**
- * _printf - mimicks library function printf
- * @format: input string storing all desired characters
- * Return: no of characters printed
+ * print_string - Print a string to stdout
+ * @str: The string to print
+ * Return: Number of characters printed (excluding the null byte used to end output to strings)
+ */
+int print_string(char *str)
+{
+    if (str == NULL) {
+        write(1, "(null)", 6);
+        return (6);
+    }
+
+    int len = 0;
+    while (str[len])
+        len++;
+
+    write(1, str, len);
+    return (len);
+}
+
+/**
+ * _printf - Printf function
+ * @format: Format string.
+ * Return: Number of characters printed (excluding the null byte used to end output to strings)
  */
 int _printf(const char *format, ...)
 {
-	int output;
-	conver_t f_list[] = {
-		{"c", print_char},
-		{"s", print_str},
-		{"d", print_int},
-		{"u", un_int},
-		{NULL, NULL}
-	};
-	va_list arg_list;
+    int p = 0;
+    va_list args;
 
-	if (format == NULL)
-		return (-1);
+    if (format == NULL)
+        return (-1);
 
-	va_start(arg_list, format);
+    va_start(args, format);
 
-	output = resolve(format, f_list, arg_list);
-	va_end(arg_list);
-	return (output);
+    while (*format)
+    {
+        if (*format == '%')
+        {
+            format++;
+
+            switch (*format)
+            {
+                case 'c':
+                    p += print_char((char)va_arg(args, int));
+                    break;
+                case 's':
+                    p += print_string(va_arg(args, char *));
+                    break;
+                case '%':
+                    p += print_char('%');
+                    break;
+                default:
+                    p += print_char('%');
+                    p += print_char(*format);
+                    break;
+            }
+        }
+        else
+        {
+            p += print_char(*format);
+        }
+
+        format++;
+    }
+    va_end(args);
+    return (p);
 }
+
