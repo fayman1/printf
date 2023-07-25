@@ -1,4 +1,5 @@
-#include "main.h"
+#include <unistd.h>
+#include <stdarg.h>
 
 /**
  * print_char - Print a single character to stdout
@@ -54,9 +55,6 @@ int _printf(const char *format, ...)
 		if (*format == '%')
 		{
 			format++;
-
-			if (*format == '\0')
-				return (-1); // Handle case when '%' is at the end of the format string
 
 			switch (*format)
 			{
