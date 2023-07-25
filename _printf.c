@@ -49,13 +49,10 @@ int _printf(const char *format, ...)
 		return (-1);
 
 	va_start(args, format);
+
 	while (*format)
 	{
-		if (*format != '%')
-		{
-			p += print_char(*format);
-		}
-		else
+		if (*format == '%')
 		{
 			format++;
 
@@ -71,13 +68,19 @@ int _printf(const char *format, ...)
 					p += print_char('%');
 					break;
 				default:
-					p += print_char(*(format - 1));
+					p += print_char('%');
 					p += print_char(*format);
 					break;
 			}
 		}
+		else
+		{
+			p += print_char(*format);
+		}
+
 		format++;
 	}
+
 	va_end(args);
 	return (p);
 }
