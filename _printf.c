@@ -1,83 +1,91 @@
 #include <unistd.h>
 #include <stdarg.h>
 
-/*;*
- * print_char - Print a single character to stdout
+/**
+ * _putchar - writes a character to stdout
  * @c: The character to print
- * Return: Number of characters printed (always 1)
+ * Return: 1 on success, -1 on error.
  */
-int print_char(char c)
+int _putchar(char c)
 {
-    write(1, &c, 1);
-    return (1);
+	return (write(1, &c, 1));
 }
 
 /**
- * print_string - Print a string to stdout
+ * _puts - prints a string to stdout
  * @str: The string to print
- * Return: Number of characters printed (excluding the null byte used to end output to strings)
+ * Return: The number of characters printed (excluding the null terminator)
  */
-int print_string(char *str)
+int _puts(char *str)
 {
-    if (str == NULL) {
-        write(1, "(null)", 6);
-        return (6);
-    }
+	int i = 0;
 
-    int len = 0;
-    while (str[len])
-        len++;
+	if (str == NULL)
+	{
+		str = "(null)";
+		while (str[i])
+		{
+			_putchar(str[i]);
+			i++;
+		}
+		return (i);
+	}
 
-    write(1, str, len);
-    return (len);
+	while (str[i])
+	{
+		_putchar(str[i]);
+		i++;
+	}
+
+	return (i);
 }
 
 /**
  * _printf - Printf function
- * @format: Format string.
- * Return: Number of characters printed (excluding the null byte used to end output to strings)
+ * @format: format.
+ * Return: Number of characters printed
  */
 int _printf(const char *format, ...)
 {
-    int p = 0;
-    va_list args;
+	int p = 0;
+	va_list args;
 
-    if (format == NULL)
-        return (-1);
+	if (format == NULL)
+		return (-1);
 
-    va_start(args, format);
+	va_start(args, format);
 
-    while (*format)
-    {
-        if (*format == '%')
-        {
-            format++;
+	while (*format)
+	{
+		if (*format == '%')
+		{
+			format++;
 
-            switch (*format)
-            {
-                case 'c':
-                    p += print_char((char)va_arg(args, int));
-                    break;
-                case 's':
-                    p += print_string(va_arg(args, char *));
-                    break;
-                case '%':
-                    p += print_char('%');
-                    break;
-                default:
-                    p += print_char('%');
-                    p += print_char(*format);
-                    break;
-            }
-        }
-        else
-        {
-            p += print_char(*format);
-        }
+			switch (*format)
+			{
+				case 'c':
+					p += _putchar((char)va_arg(args, int));
+					break;
+				case 's':
+					p += _puts(va_arg(args, char *));
+					break;
+				case '%':
+					p += _putchar('%');
+					break;
+				default:
+					p += _putchar('%');
+					p += _putchar(*format);
+					break;
+			}
+		}
+		else
+		{
+			p += _putchar(*format);
+		}
 
-        format++;
-    }
-    va_end(args);
-    return (p);
+		format++;
+	}
+	va_end(args);
+	return (p);
 }
 
