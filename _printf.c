@@ -12,6 +12,23 @@ int _putchar(char c)
 }
 
 /**
+ * _puts - prints a string to stdout
+ * @str: The string to print
+ * Return: The number of characters printed (excluding the null byte)
+ */
+int _puts(char *str)
+{
+	int i = 0;
+
+	while (str && str[i])
+	{
+		_putchar(str[i]);
+		i++;
+	}
+	return (i);
+}
+
+/**
  * _printf - produces output according to a format
  */
 int _printf(const char *format, ...)
@@ -40,14 +57,7 @@ int _printf(const char *format, ...)
 					break;
 				case 's':
 					str = va_arg(args, char *);
-					if (str == NULL)
-						str = "(null)";
-					while (*str)
-					{
-						_putchar(*str);
-						str++;
-						count++;
-					}
+					count += _puts(str);
 					break;
 				case '%':
 					_putchar('%');
