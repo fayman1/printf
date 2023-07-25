@@ -1,16 +1,6 @@
 #include <unistd.h>
 #include <stdarg.h>
-
-/**
- * print_char - Print a single character to stdout
- * @c: The character to print
- * Return: Number of characters printed
- */
-int print_char(char c)
-{
-	write(1, &c, 1);
-	return (1);
-}
+#include <string.h>
 
 /**
  * print_string - Print a string to stdout
@@ -21,10 +11,8 @@ int print_string(char *str)
 {
 	if (str != NULL)
 	{
-		int len = 0;
+		int len = strlen(str);
 
-		while (str[len])
-			len++;
 		write(1, str, len);
 		return (len);
 	}
