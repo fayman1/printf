@@ -20,11 +20,15 @@ int _puts(char *str)
 {
 	int i = 0;
 
-	while (str && str[i])
+	if (str == NULL)
+		str = "(null)";
+
+	while (str[i])
 	{
 		_putchar(str[i]);
 		i++;
 	}
+
 	return (i);
 }
 
@@ -57,6 +61,8 @@ int _printf(const char *format, ...)
 					break;
 				case 's':
 					str = va_arg(args, char *);
+					if (str == NULL)
+						str = "(null)";
 					count += _puts(str);
 					break;
 				case '%':
