@@ -8,7 +8,7 @@
  */
 int _putchar(char c)
 {
-	return (write(1, &c, 1));
+    return (write(1, &c, 1));
 }
 
 /**
@@ -18,26 +18,26 @@ int _putchar(char c)
  */
 int _puts(char *str)
 {
-	int i = 0;
+    int i = 0;
 
-	if (str == NULL)
-	{
-		str = "(null)";
-		while (str[i])
-		{
-			_putchar(str[i]);
-			i++;
-		}
-		return (i);
-	}
+    if (str == NULL)
+    {
+        str = "(null)";
+        while (str[i])
+        {
+            _putchar(str[i]);
+            i++;
+        }
+        return (i);
+    }
 
-	while (str[i])
-	{
-		_putchar(str[i]);
-		i++;
-	}
+    while (str[i])
+    {
+        _putchar(str[i]);
+        i++;
+    }
 
-	return (i);
+    return (i);
 }
 
 /**
@@ -47,45 +47,45 @@ int _puts(char *str)
  */
 int _printf(const char *format, ...)
 {
-	int p = 0;
-	va_list args;
+    int p = 0;
+    va_list args;
 
-	if (format == NULL)
-		return (-1);
+    if (format == NULL)
+        return (-1);
 
-	va_start(args, format);
+    va_start(args, format);
 
-	while (*format)
-	{
-		if (*format == '%')
-		{
-			format++;
+    while (*format)
+    {
+        if (*format == '%')
+        {
+            format++;
 
-			switch (*format)
-			{
-				case 'c':
-					p += _putchar((char)va_arg(args, int));
-					break;
-				case 's':
-					p += _puts(va_arg(args, char *));
-					break;
-				case '%':
-					p += _putchar('%');
-					break;
-				default:
-					p += _putchar('%');
-					p += _putchar(*format);
-					break;
-			}
-		}
-		else
-		{
-			p += _putchar(*format);
-		}
+            switch (*format)
+            {
+                case 'c':
+                    p += _putchar((char)va_arg(args, int));
+                    break;
+                case 's':
+                    p += _puts(va_arg(args, char *));
+                    break;
+                case '%':
+                    p += _putchar('%');
+                    break;
+                default:
+                    p += _putchar('%');
+                    p += _putchar(*format);
+                    break;
+            }
+        }
+        else
+        {
+            p += _putchar(*format);
+        }
 
-		format++;
-	}
-	va_end(args);
-	return (p);
+        format++;
+    }
+    va_end(args);
+    return (p);
 }
 
