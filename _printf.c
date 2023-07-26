@@ -8,36 +8,7 @@
  */
 int _putchar(char c)
 {
-	return (write(1, &c, 1));
-}
-
-/**
- * _puts - prints a string to stdout
- * @str: The string to print
- * Return: The number of characters printed (excluding the null terminator)
- */
-int _puts(char *str)
-{
-	int i = 0;
-
-	if (str == NULL)
-	{
-		str = "(null)";
-		while (str[i])
-		{
-			_putchar(str[i]);
-			i++;
-		}
-		return (i);
-	}
-
-	while (str[i])
-	{
-		_putchar(str[i]);
-		i++;
-	}
-
-	return (i);
+    return (write(1, &c, 1));
 }
 
 /**
@@ -47,45 +18,67 @@ int _puts(char *str)
  */
 int _printf(const char *format, ...)
 {
-	int p = 0;
-	va_list args;
+    int p = 0;
+    va_list args;
 
-	if (format == NULL)
-		return (-1);
+    if (format == NULL)
+        return (-1);
 
-	va_start(args, format);
+    va_start(args, format);
 
-	while (*format)
-	{
-		if (*format == '%')
-		{
-			format++;
+    while (*format)
+    {
+        if (*format == '%')
+        {
+            format++;
 
-			switch (*format)
-			{
-				case 'c':
-					p += _putchar((char)va_arg(args, int));
-					break;
-				case 's':
-					p += _puts(va_arg(args, char *));
-					break;
-				case '%':
-					p += _putchar('%');
-					break;
-				default:
-					p += _putchar('%');
-					p += _putchar(*format);
-					break;
-			}
-		}
-		else
-		{
-			p += _putchar(*format);
-		}
+            if (*format == '\0')
+            {
+                p += _putchar('%');
+                break;
+            }
 
-		format++;
-	}
-	va_end(args);
-	return (p);
+            switch (*format)
+            {
+                case 'c':
+                    p += _putchar((char)va_arg(args, int));
+                    break;
+                case 's': {
+                    char *str = va_arg(args, char *);
+                    if (str == NULL) {
+                        p += _putchar('(');
+                        p += _putchar('n');
+                        p += _putchar('u');
+                        p += _putchar('l');
+                        p += _putchar('l');
+                        p += _putchar(')');
+                    } else {
+                        int i = 0;
+                        while (str[i]) {
+                            p += _putchar(str[i]);
+                            i++;
+                        }
+                    }
+                    break;
+                }
+                case '%':
+                    p += _putchar('%');
+                    break;
+                default:
+                    
+                    p += _putchar('%');
+                    p += _putchar(*format);
+                    break;
+            }
+        }
+        else
+        {
+            p += _putchar(*format);
+        }
+
+        format++;
+    }
+    va_end(args);
+    return (p);
 }
 
