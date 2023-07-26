@@ -1,97 +1,50 @@
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include "main.h"
-/**
- * _printf - Entry point
- *
- * Description: 'a program to emulate the functions of printf'
- * @format: char pointer to a format string that holds the text
- * Return: strlen
- */
+#include <limits.h>
+#include <stdio.h>
 
+/**
+ * _printf - produces output according to a format
+ * @format: format string containing the characters and the specifiers
+ * Description: this function will call the get_print() function that will
+ * determine which printing function to call depending on the conversion
+ * specifiers contained into fmt
+ * Return: length of the formatted output string
+ */
 int _printf(const char *format, ...)
 {
-	int i = 0;
-	int j;
-	int di, id;
-	int strlen = 0;
-	char *s;
-	va_list args;
-	va_start(args, format);
+	int (*pfunc)(va_list, flags_t *);
+	const char *p;
+	va_list arguments;
+	flags_t flags = {0, 0, 0};
 
-	while (format != NULL && format[i] != '\0')
+	register int count = 0;
+
+	va_start(arguments, format);
+	if (!format || (format[0] == '%' && !format[1]))
+		return (-1);
+	if (format[0] == '%' && format[1] == ' ' && !format[2])
+		return (-1);
+	for (p = format; *p; p++)
 	{
-		for (i = 0; format[i] != '\0'; i++)
+		if (*p == '%')
 		{
-			while (format[i] == '%')
+			p++;
+			if (*p == '%')
 			{
-				i++;
-				if (format[i] == '%')
-				{
-					break;
-				}
-				else if (format[i] == '\0')
-				{
-					strlen++;
-					return (-1);
-				}
-				else if (format[i] == ' ')
-				{
-					return (-1);
-					strlen++;
-					i++;
-				}
-				else
-				{
-					switch (format[i])
-					{
-						case 's':
-							i++;
-							s = va_arg(args, char *);
-							if (s == NULL)
-							{
-								_putchar('(');
-								_putchar('n');
-								_putchar('u');
-								_putchar('l');
-								_putchar('l');
-								_putchar(')');
-								strlen += 6;
-								break;
-							}
-							strlen += _strlen(s);
-
-							for (j = 0; s[j] != '\0'; j++)
-							{
-								_putchar(s[j]);
-							}
-							break;
-						case 'c':
-							i++;
-							_putchar(va_arg(args, int));
-							break;
-						case 'd':
-							i++;
-							di = va_arg(args, int);
-							strlen += print_integer(di);
-							break;
-						case 'i':
-							i++;
-							id = va_arg(args, int);
-							strlen += print_integer(id);
-							break;
-						default:
-							_putchar('%');
-							strlen++;
-					}
-				}
+				count += _putchar('%');
+				continue;
 			}
-			_putchar(format[i]);
-			strlen++;
-		}
+			while (get_flag(*p, &flags))
+				p++;
+			pfunc = get_print(*p);
+			count += (pfunc)
+				? pfunc(arguments, &flags)
+				: _printf("%%%c", *p);
+		} else
+			count += _putchar(*p);
 	}
-	va_end(args);
-	return (strlen);
-}
+	_putchar(-1);
+	va_end(arguments);
+	return (count);
 
+}
