@@ -1,91 +1,97 @@
-#include <unistd.h>
 #include <stdarg.h>
-
+#include <stdio.h>
+#include <stdlib.h>
+#include "main.h"
 /**
- * _putchar - writes a character to stdout
- * @c: The character to print
- * Return: 1 on success, -1 on error.
+ * _printf - Entry point
+ *
+ * Description: 'a program to emulate the functions of printf'
+ * @format: char pointer to a format string that holds the text
+ * Return: strlen
  */
-int _putchar(char c)
-{
-	return (write(1, &c, 1));
-}
 
-/**
- * _puts - prints a string to stdout
- * @str: The string to print
- * Return: The number of characters printed (excluding the null terminator)
- */
-int _puts(char *str)
-{
-	int i = 0;
-
-	if (str == NULL)
-	{
-		str = "(null)";
-		while (str[i])
-		{
-			_putchar(str[i]);
-			i++;
-		}
-		return (i);
-	}
-
-	while (str[i])
-	{
-		_putchar(str[i]);
-		i++;
-	}
-
-	return (i);
-}
-
-/**
- * _printf - Printf function
- * @format: format.
- * Return: Number of characters printed
- */
 int _printf(const char *format, ...)
 {
-	int p = 0;
+	int i = 0;
+	int j;
+	int di, id;
+	int strlen = 0;
+	char *s;
 	va_list args;
-
-	if (format == NULL)
-		return (-1);
-
 	va_start(args, format);
 
-	while (*format)
+	while (format != NULL && format[i] != '\0')
 	{
-		if (*format == '%')
+		for (i = 0; format[i] != '\0'; i++)
 		{
-			format++;
-
-			switch (*format)
+			while (format[i] == '%')
 			{
-				case 'c':
-					p += _putchar((char)va_arg(args, int));
+				i++;
+				if (format[i] == '%')
+				{
 					break;
-				case 's':
-					p += _puts(va_arg(args, char *));
-					break;
-				case '%':
-					p += _putchar('%');
-					break;
-				default:
-					p += _putchar('%');
-					p += _putchar(*format);
-					break;
-			}
-		}
-		else
-		{
-			p += _putchar(*format);
-		}
+				}
+				else if (format[i] == '\0')
+				{
+					strlen++;
+					return (-1);
+				}
+				else if (format[i] == ' ')
+				{
+					return (-1);
+					strlen++;
+					i++;
+				}
+				else
+				{
+					switch (format[i])
+					{
+						case 's':
+							i++;
+							s = va_arg(args, char *);
+							if (s == NULL)
+							{
+								_putchar('(');
+								_putchar('n');
+								_putchar('u');
+								_putchar('l');
+								_putchar('l');
+								_putchar(')');
+								strlen += 6;
+								break;
+							}
+							strlen += _strlen(s);
 
-		format++;
+							for (j = 0; s[j] != '\0'; j++)
+							{
+								_putchar(s[j]);
+							}
+							break;
+						case 'c':
+							i++;
+							_putchar(va_arg(args, int));
+							break;
+						case 'd':
+							i++;
+							di = va_arg(args, int);
+							strlen += print_integer(di);
+							break;
+						case 'i':
+							i++;
+							id = va_arg(args, int);
+							strlen += print_integer(id);
+							break;
+						default:
+							_putchar('%');
+							strlen++;
+					}
+				}
+			}
+			_putchar(format[i]);
+			strlen++;
+		}
 	}
 	va_end(args);
-	return (p);
+	return (strlen);
 }
 
