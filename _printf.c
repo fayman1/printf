@@ -40,6 +40,7 @@ int _printf(const char *format, ...)
 
             switch (*format)
             {
+              
                 case 'c':
                     p += _putchar((char)va_arg(args, int));
                     break;
